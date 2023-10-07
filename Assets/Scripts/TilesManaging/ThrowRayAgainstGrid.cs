@@ -1,8 +1,8 @@
-using finished3;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.TextCore.Text;
 
 public class ThrowRayAgainstGrid : MonoBehaviour
@@ -21,11 +21,19 @@ public class ThrowRayAgainstGrid : MonoBehaviour
 
     private Player character;
 
+    // Path finder
     private PathFinder pathFinder;
     private List<Tile> path;
 
+    // Range finder
     private RangeFinder rangeFinder;
     private List<Tile> rangeFinderTiles;
+
+    // For ray casting caching
+    private Transform previousGOTouched;
+    private Tile previousTile;
+    private DecalProjector previousDecal;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -35,6 +43,7 @@ public class ThrowRayAgainstGrid : MonoBehaviour
 
         rangeFinder = new RangeFinder();
         rangeFinderTiles = new List<Tile>();
+
     }
 
     // Update is called once per frame
@@ -51,7 +60,16 @@ public class ThrowRayAgainstGrid : MonoBehaviour
         // if the ray hits the plane...
         if (Physics.Raycast(ray, out RaycastHit hit, 100f, layer))
         {
-            Tile tile = hit.transform.GetComponent<CurrentTile>().tile;
+
+            Tile tile = previousTile;
+            if (hit.transform != previousGOTouched)
+            {
+                tile = hit.transform.GetComponent<CurrentTile>().tile;
+                if(previousDecal) previousDecal.enabled = true;
+                previousDecal = hit.transform.GetChild(0).GetComponent<DecalProjector>();
+                previousDecal.enabled = false;
+                previousTile = tile;
+            }
             if (rangeFinderTiles.Contains(tile))
             {
                 if (!decal.activeInHierarchy) decal.SetActive(true);
@@ -64,11 +82,16 @@ public class ThrowRayAgainstGrid : MonoBehaviour
         }
         else
         {
-            if(decal.activeInHierarchy) decal.SetActive(false);
+            if (decal.activeInHierarchy) decal.SetActive(false);
         }
         if (path.Count > 0)
         {
             MoveAlongPath();
+            foreach (var tile in rangeFinderTiles)
+            {
+                tile.currentTile.GetComponent<Collider>().enabled = false;
+                tile.currentTile.transform.GetChild(0).gameObject.SetActive(false);
+            }
             rangeFinderTiles.Clear();
         }
 
@@ -81,7 +104,7 @@ public class ThrowRayAgainstGrid : MonoBehaviour
         float yIndex = path[0].y;
         character.transform.position = Vector3.MoveTowards(character.transform.position, path[0].realPos, step);
         character.transform.position = new Vector3(character.transform.position.x, yIndex, character.transform.position.z);
-        if (Vector3.Distance(character.transform.position, path[0].realPos) < 0.00001f)
+        if (Vector3.Distance(character.transform.position, path[0].realPos) < 0.1f)
         {
             PositionCharacterOnLine(path[0]);
             path.RemoveAt(0);
@@ -89,8 +112,11 @@ public class ThrowRayAgainstGrid : MonoBehaviour
     }
     private void PositionCharacterOnLine(Tile tile)
     {
-        character.transform.position = tile.realPos;
+        character.currentTile.state = character.previousTileState;
         character.currentTile = tile;
+        character.previousTileState = tile.state;
+        character.currentTile.state = Tile.TileTerrain.HAS_A_UNIT_ON;
+        character.transform.position = tile.realPos;
     }
 
     private void GetInRangeTile()
@@ -103,8 +129,8 @@ public class ThrowRayAgainstGrid : MonoBehaviour
         {
             foreach (var tile in rangeFinderTiles)
             {
-                tile.currentTile.GetComponent<MeshRenderer>().material.color = Color.red;
-                tile.currentTile.GetComponent<MeshRenderer>().enabled = true;
+                tile.currentTile.GetComponent<Collider>().enabled = true;
+                tile.currentTile.transform.GetChild(0).gameObject.SetActive(true);
             }
         }
     }

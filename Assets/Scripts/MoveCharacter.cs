@@ -11,12 +11,12 @@ public class MoveCharacter : MonoBehaviour
 
     private void OnEnable()
     {
-        GridManager.gridGenerated += MoveCharacterToTheClosestCase;
+        GridManager.onGridGenerated += MoveCharacterToTheClosestCase;
         
     }
     private void OnDisable()
     {
-        GridManager.gridGenerated -= MoveCharacterToTheClosestCase;
+        GridManager.onGridGenerated -= MoveCharacterToTheClosestCase;
 
     }
 
@@ -29,6 +29,8 @@ public class MoveCharacter : MonoBehaviour
         }
         transform.position = Grid.tilesGrid[tile].realPos + Vector3.up *0.5f;
         Player.Instance.currentTile = Grid.tilesGrid[tile];
+        Player.Instance.previousTileState = Player.Instance.currentTile.state;
+        Player.Instance.currentTile.state = Tile.TileTerrain.HAS_A_UNIT_ON;
     }
 
     private void Update()

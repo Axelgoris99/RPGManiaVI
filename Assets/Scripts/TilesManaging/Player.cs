@@ -21,5 +21,6 @@ public class Player : MonoBehaviour
     }
 
     public Tile currentTile;
+    public Tile.TileTerrain previousTileState;
 
 }
