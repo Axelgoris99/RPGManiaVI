@@ -27,8 +27,8 @@ public class GridManager : MonoBehaviour
     public GameObject gridElementPrefab;
     public int gridSizeX = 20;
     public int gridSizeZ = 20;
-    public float spacing = 1.0f;
-    public Vector3 target;
+    private float spacing = 1.0f;
+    private Vector3 target;
     public GameObject centerAround;
     public List<Tile> tiles;
     public LayerMask layer;

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 public enum GameState
 {
@@ -12,6 +13,7 @@ public class GeneralStateMachine : MonoBehaviour
 {
     #region Singleton
     private static GeneralStateMachine instance;
+    public static GeneralStateMachine Instance { get { return instance; } }
 
     private void Awake()
     {
@@ -30,12 +32,30 @@ public class GeneralStateMachine : MonoBehaviour
     public delegate void StateChanged(GameState newState);
     public static event StateChanged onStateChanged;
 
+    public GameState gameState = GameState.MainMenu;
+
     private GameState currentState;
+    public GameState CurrentState
+    {
+        get { return currentState; }
+        set
+        {
+            currentState = value;
+            onStateChanged?.Invoke(currentState);
+        }
+    }
     private void Start()
     {
         // Set the initial state (e.g., Exploring)
         ChangeToFighting();
-      }
+     }
+    private void Update()
+    {
+        if(gameState != currentState)
+        {
+            ChangeState(gameState);
+        }
+    }
 
     // Implement methods for state transitions
     public void ChangeToMainMenu()
@@ -64,9 +84,12 @@ public class GeneralStateMachine : MonoBehaviour
 
     private void ChangeState(GameState newState)
     {
-        // Update the current state
-        currentState = newState;
-
-        onStateChanged?.Invoke(currentState);
+        if (currentState != newState)
+        {
+            // Update the current state
+            currentState = newState;
+            onStateChanged?.Invoke(currentState);
+            gameState = currentState;
+        }
     }
 }

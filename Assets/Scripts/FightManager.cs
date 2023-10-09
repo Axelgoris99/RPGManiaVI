@@ -10,6 +10,7 @@ public class FightManager : MonoBehaviour
 
     #region Singleton
     private static FightManager instance;
+    public static FightManager Instance { get { return instance; } }
 
     private void Awake()
     {
@@ -41,9 +42,4 @@ public class FightManager : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

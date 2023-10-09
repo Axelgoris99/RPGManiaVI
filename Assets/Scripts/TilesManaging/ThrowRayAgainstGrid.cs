@@ -34,6 +34,9 @@ public class ThrowRayAgainstGrid : MonoBehaviour
     private Tile previousTile;
     private DecalProjector previousDecal;
 
+    // Grid is calculated, should start a fight
+    private bool inAFight = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -45,18 +48,48 @@ public class ThrowRayAgainstGrid : MonoBehaviour
         rangeFinderTiles = new List<Tile>();
 
     }
+    private void OnEnable()
+    {
+        GridManager.onGridGenerated += StartChecking;
+    }
+    private void OnDisable()
+    {
+        GridManager.onGridGenerated -= StartChecking;
 
+    }
+
+    private void StartChecking()
+    {
+        inAFight = true;
+    }
     // Update is called once per frame
     void LateUpdate()
     {
+        if (GeneralStateMachine.Instance.CurrentState != GameState.Fighting || !inAFight)
+        {
+            if (rangeFinderTiles.Count > 0)
+            {
+                foreach (var tile in rangeFinderTiles)
+                {
+                    tile.currentTile.GetComponent<Collider>().enabled = false;
+                    tile.currentTile.transform.GetChild(0).gameObject.SetActive(false);
+                }
+                rangeFinderTiles.Clear();
+            }
+            if(path.Count > 0)
+            {
+                path.Clear();
+            }
+            return;
+        }
         if (rangeFinderTiles.Count <= 0)
         {
             GetInRangeTile();
             DisplayPossibleTile();
         }
-        Camera cam = Camera.main;
+
         // Throw a ray from the camera towards the mouse in the scene
-        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+        Ray ray = MouseInput.Instance.cameraRay;
         // if the ray hits the plane...
         if (Physics.Raycast(ray, out RaycastHit hit, 100f, layer))
         {
@@ -65,7 +98,7 @@ public class ThrowRayAgainstGrid : MonoBehaviour
             if (hit.transform != previousGOTouched)
             {
                 tile = hit.transform.GetComponent<CurrentTile>().tile;
-                if(previousDecal) previousDecal.enabled = true;
+                if (previousDecal) previousDecal.enabled = true;
                 previousDecal = hit.transform.GetChild(0).GetComponent<DecalProjector>();
                 previousDecal.enabled = false;
                 previousTile = tile;
