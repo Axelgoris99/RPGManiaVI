@@ -62,6 +62,24 @@ public partial class @BaseControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ChangeObject"",
+                    ""type"": ""Button"",
+                    ""id"": ""d6504ddb-86d0-46a7-bdef-689bfdbee7d9"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""EndTurn"",
+                    ""type"": ""Button"",
+                    ""id"": ""f4b25df8-8104-4a5b-a32a-720e6ef242e6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -328,6 +346,39 @@ public partial class @BaseControls: IInputActionCollection2, IDisposable
                     ""action"": ""TurnCameraLeft"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8ab6abd7-813f-45a4-ac33-a3105609340a"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeObject"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""82197d11-12e2-4468-8d49-16a481daf822"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeObject"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2dcfbcdc-fb37-443f-b119-b44dec29a1d2"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""EndTurn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -340,6 +391,8 @@ public partial class @BaseControls: IInputActionCollection2, IDisposable
         m_gameplay_Use = m_gameplay.FindAction("Use", throwIfNotFound: true);
         m_gameplay_TurnCameraRight = m_gameplay.FindAction("TurnCameraRight", throwIfNotFound: true);
         m_gameplay_TurnCameraLeft = m_gameplay.FindAction("TurnCameraLeft", throwIfNotFound: true);
+        m_gameplay_ChangeObject = m_gameplay.FindAction("ChangeObject", throwIfNotFound: true);
+        m_gameplay_EndTurn = m_gameplay.FindAction("EndTurn", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -405,6 +458,8 @@ public partial class @BaseControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_gameplay_Use;
     private readonly InputAction m_gameplay_TurnCameraRight;
     private readonly InputAction m_gameplay_TurnCameraLeft;
+    private readonly InputAction m_gameplay_ChangeObject;
+    private readonly InputAction m_gameplay_EndTurn;
     public struct GameplayActions
     {
         private @BaseControls m_Wrapper;
@@ -413,6 +468,8 @@ public partial class @BaseControls: IInputActionCollection2, IDisposable
         public InputAction @Use => m_Wrapper.m_gameplay_Use;
         public InputAction @TurnCameraRight => m_Wrapper.m_gameplay_TurnCameraRight;
         public InputAction @TurnCameraLeft => m_Wrapper.m_gameplay_TurnCameraLeft;
+        public InputAction @ChangeObject => m_Wrapper.m_gameplay_ChangeObject;
+        public InputAction @EndTurn => m_Wrapper.m_gameplay_EndTurn;
         public InputActionMap Get() { return m_Wrapper.m_gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -434,6 +491,12 @@ public partial class @BaseControls: IInputActionCollection2, IDisposable
             @TurnCameraLeft.started += instance.OnTurnCameraLeft;
             @TurnCameraLeft.performed += instance.OnTurnCameraLeft;
             @TurnCameraLeft.canceled += instance.OnTurnCameraLeft;
+            @ChangeObject.started += instance.OnChangeObject;
+            @ChangeObject.performed += instance.OnChangeObject;
+            @ChangeObject.canceled += instance.OnChangeObject;
+            @EndTurn.started += instance.OnEndTurn;
+            @EndTurn.performed += instance.OnEndTurn;
+            @EndTurn.canceled += instance.OnEndTurn;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -450,6 +513,12 @@ public partial class @BaseControls: IInputActionCollection2, IDisposable
             @TurnCameraLeft.started -= instance.OnTurnCameraLeft;
             @TurnCameraLeft.performed -= instance.OnTurnCameraLeft;
             @TurnCameraLeft.canceled -= instance.OnTurnCameraLeft;
+            @ChangeObject.started -= instance.OnChangeObject;
+            @ChangeObject.performed -= instance.OnChangeObject;
+            @ChangeObject.canceled -= instance.OnChangeObject;
+            @EndTurn.started -= instance.OnEndTurn;
+            @EndTurn.performed -= instance.OnEndTurn;
+            @EndTurn.canceled -= instance.OnEndTurn;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -473,5 +542,7 @@ public partial class @BaseControls: IInputActionCollection2, IDisposable
         void OnUse(InputAction.CallbackContext context);
         void OnTurnCameraRight(InputAction.CallbackContext context);
         void OnTurnCameraLeft(InputAction.CallbackContext context);
+        void OnChangeObject(InputAction.CallbackContext context);
+        void OnEndTurn(InputAction.CallbackContext context);
     }
 }

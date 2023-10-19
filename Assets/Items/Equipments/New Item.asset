@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 772bdf35e09b07c41ae45d775ad8f568, type: 3}
+  m_Name: New Item
+  m_EditorClassIdentifier: 
+  name: Ranger' Hat
+  icon: {fileID: 21300000, guid: f09eae8c0ea04254b90c5386a034a225, type: 3}
+  showInInventory: 1
+  equipSlot: 0
+  maxHealth: 10
+  abilityPoints: 0
+  strenght: 5
+  intelligence: 0
+  constitution: 0
+  mind: 0
+  dexterity: 10
+  luck: 0
+  attackRange: 0
+  movementRange: 2
+  prefab: {fileID: 0}

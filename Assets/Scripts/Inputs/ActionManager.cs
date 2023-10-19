@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -20,6 +21,8 @@ public class ActionManager : MonoBehaviour
     public static event SimpleTrigger onRotateLeft;
     public static event SimpleTrigger onRotateRight;
     public static event SimpleTrigger onUse;
+    public static event SimpleTrigger onSelectInteractable;
+    public static event SimpleTrigger onEndTurn;
 
     public delegate void MoveEvent(Vector2 moveVector);
     public static event MoveEvent onMove;
@@ -36,6 +39,8 @@ public class ActionManager : MonoBehaviour
 
         // for the use action
         actions.FindActionMap("gameplay").FindAction("Use").performed += OnUse;
+        actions.FindActionMap("gameplay").FindAction("ChangeObject").performed += OnSelectInteractable;
+        actions.FindActionMap("gameplay").FindAction("EndTurn").performed += OnEndTurn;
     }
 
     private void OnTurnCameraRight(InputAction.CallbackContext obj)
@@ -56,6 +61,16 @@ public class ActionManager : MonoBehaviour
     private void OnUse(InputAction.CallbackContext obj)
     {
         onUse?.Invoke();
+    }
+
+    private void OnSelectInteractable(InputAction.CallbackContext obj)
+    {
+        onSelectInteractable?.Invoke();
+    }
+
+    private void OnEndTurn(InputAction.CallbackContext obj)
+    {
+        onEndTurn?.Invoke();
     }
 
     void OnEnable()

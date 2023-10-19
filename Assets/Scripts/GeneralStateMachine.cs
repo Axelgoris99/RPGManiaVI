@@ -47,7 +47,7 @@ public class GeneralStateMachine : MonoBehaviour
     private void Start()
     {
         // Set the initial state (e.g., Exploring)
-        ChangeToFighting();
+        ChangeToExploring();
      }
     private void Update()
     {
